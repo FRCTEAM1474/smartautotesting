@@ -13,39 +13,42 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.ctre.phoenix.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.BaseMotorController.getSelectedSensorPosition
+
 
 public class DriveSubsystem extends SubsystemBase {
+
+  public static WPI_TalonSRX m_motorZero = new WPI_TalonSRX(DriveConstants.kRightMotor1Port);
+
+  public static WPI_TalonSRX m_motorOne = new WPI_TalonSRX(DriveConstants.kRightMotor2Port);
+
+  public static WPI_TalonSRX m_motorTwo = new WPI_TalonSRX(DriveConstants.kLeftMotor1Port);
+
+  public static WPI_TalonSRX m_motorThree = new WPI_TalonSRX(DriveConstants.kLeftMotor2Port);
+
   // The motors on the left side of the drive.
   private final MotorControllerGroup m_leftMotors =
-      new MotorControllerGroup(
-          new WPI_TalonSRX(DriveConstants.kLeftMotor1Port),
-          new PWMSparkMax(DriveConstants.kLeftMotor2Port));
+      new MotorControllerGroup(m_motorTwo, m_motorThree);
 
   // The motors on the right side of the drive.
   private final MotorControllerGroup m_rightMotors =
-      new MotorControllerGroup(
-          new PWMSparkMax(DriveConstants.kRightMotor1Port),
-          new PWMSparkMax(DriveConstants.kRightMotor2Port));
+      new MotorControllerGroup(m_motorZero, m_motorOne);
 
   // The robot's drive
   private final DifferentialDrive m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
 
   // The left-side drive encoder
-  private final Encoder m_leftEncoder =
-      new Encoder(
-          DriveConstants.kLeftEncoderPorts[0],
-          DriveConstants.kLeftEncoderPorts[1],
-          DriveConstants.kLeftEncoderReversed);
+  double m_leftEncoder = m_motorZero.getSelectedSensorPosition();
 
   // The right-side drive encoder
-  private final Encoder m_rightEncoder =
-      new Encoder(
-          DriveConstants.kRightEncoderPorts[0],
-          DriveConstants.kRightEncoderPorts[1],
-          DriveConstants.kRightEncoderReversed);
+  double m_rightEncoder = m_motorTwo.getSelectedSensorPosition();
+      /*new Encoder(
+          DriveConstants.kRightEncoderPorts[2],
+          DriveConstants.kRightEncoderPorts[2],
+          DriveConstants.kRightEncoderReversed);*/
 
   // The gyro sensor
   private final Gyro m_gyro = new ADXRS450_Gyro();
